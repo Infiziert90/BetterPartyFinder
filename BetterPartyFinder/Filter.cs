@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.Gui.PartyFinder.Types;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
+using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder;
 
@@ -105,6 +109,40 @@ public class Filter : IDisposable
         {
             Plugin.Log.Verbose("LISTINGMATCHES WAS FALSE");
             return false;
+        }
+
+        // if GroupSearchMode, replace filter jobs in var with active party member jobs
+        if (Plugin.Config.GroupSearchMode)
+        {
+            List<JobFlags> newJobs = new();
+            int plen = new();
+            if (InfoProxyCrossRealm.IsCrossRealmParty())
+            {
+                plen = InfoProxyCrossRealm.GetGroupMemberCount(0);
+                for (uint i = 0; i < plen; i++)
+                {
+                    unsafe
+                    {
+                        var crossRealmMember = InfoProxyCrossRealm.GetGroupMember(i, 0);
+                        //byte memberClassJobId = CrossRealmMember InfoProxyCrossRealm.GetGroupMember(i, 0);
+                        ClassJob classJob = Plugin.DataManager.GetExcelSheet<ClassJob>().GetRow((uint)crossRealmMember->ClassJobId);
+                        newJobs.Add(Util.GetJobFlagsForClassJob(classJob));
+                    }
+                }
+            } else if (Plugin.PartyList.Length > 0)
+            {
+                plen = Plugin.PartyList.Length;
+                for (var i = 0; i < plen; i++)
+                {
+                    newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.PartyList[i].ClassJob.Value));
+                }
+                filter.Jobs = newJobs;
+            } else if (Plugin.PartyList.Length == 0)
+            {
+                newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.ClientState.LocalPlayer.ClassJob.Value));
+            }
+            
+            filter.Jobs = newJobs;
         }
 
         // filter based on jobs (slow?)

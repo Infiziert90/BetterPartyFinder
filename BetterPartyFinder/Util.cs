@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.Game.Gui.PartyFinder.Types;
 using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder;
@@ -32,5 +33,107 @@ public static class Util
     {
         var dcRow = character.HomeWorld.Value.DataCenter.RowId;
         return Plugin.DataManager.GetExcelSheet<World>().Where(world => world.IsPublic && world.DataCenter.RowId == dcRow);
+    }
+
+    internal static JobFlags GetJobFlagsForClassJob(ClassJob classJob)
+    {
+        var jobFlags = new JobFlags();
+        switch (classJob.Abbreviation.ExtractText())
+        {
+            case "GLD":
+                jobFlags = JobFlags.Gladiator;
+                break;
+            case "PGL":
+                jobFlags = JobFlags.Pugilist;
+                break;
+            case "MRD":
+                jobFlags = JobFlags.Marauder;
+                break;
+            case "LNC":
+                jobFlags = JobFlags.Lancer;
+                break;
+            case "ARC":
+                jobFlags = JobFlags.Archer;
+                break;
+            case "CNJ":
+                jobFlags = JobFlags.Conjurer;
+                break;
+            case "THM":
+                jobFlags = JobFlags.Thaumaturge;
+                break;
+            case "PLD":
+                jobFlags = JobFlags.Paladin;
+                break;
+            case "MNK":
+                jobFlags = JobFlags.Monk;
+                break;
+            case "WAR":
+                jobFlags = JobFlags.Warrior;
+                break;
+            case "DRG":
+                jobFlags = JobFlags.Dragoon;
+                break;
+            case "BRD":
+                jobFlags = JobFlags.Bard;
+                break;
+            case "WHM":
+                jobFlags = JobFlags.WhiteMage;
+                break;
+            case "BLM":
+                jobFlags = JobFlags.BlackMage;
+                break;
+            case "ACN":
+                jobFlags = JobFlags.Arcanist;
+                break;
+            case "SMN":
+                jobFlags = JobFlags.Summoner;
+                break;
+            case "SCH":
+                jobFlags = JobFlags.Scholar;
+                break;
+            case "ROG":
+                jobFlags = JobFlags.Rogue;
+                break;
+            case "NIN":
+                jobFlags = JobFlags.Ninja;
+                break;
+            case "MCH":
+                jobFlags = JobFlags.Machinist;
+                break;
+            case "DRK":
+                jobFlags = JobFlags.DarkKnight;
+                break;
+            case "AST":
+                jobFlags = JobFlags.Astrologian;
+                break;
+            case "SAM":
+                jobFlags = JobFlags.Samurai;
+                break;
+            case "RDM":
+                jobFlags = JobFlags.RedMage;
+                break;
+            case "BLU":
+                jobFlags = JobFlags.BlueMage;
+                break;
+            case "GNB":
+                jobFlags = JobFlags.Gunbreaker;
+                break;
+            case "DNC":
+                jobFlags = JobFlags.Dancer;
+                break;
+            case "RPR":
+                jobFlags = JobFlags.Reaper;
+                break;
+            case "SGE":
+                jobFlags = JobFlags.Sage;
+                break;
+            case "VPR":
+                jobFlags = JobFlags.Viper;
+                break;
+            case "PCT":
+                jobFlags = JobFlags.Pictomancer;
+                break;
+        }
+        return jobFlags;
     }
 }
