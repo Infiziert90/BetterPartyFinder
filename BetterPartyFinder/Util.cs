@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.Gui.PartyFinder.Types;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 using Lumina.Excel.Sheets;
 
 namespace BetterPartyFinder;
@@ -135,5 +136,37 @@ public static class Util
                 break;
         }
         return jobFlags;
+    }
+
+    internal static List<JobFlags> GetCurrentPartyJobs()
+    {
+        List<JobFlags> newJobs = new();
+        int plen = new();
+        if (InfoProxyCrossRealm.IsCrossRealmParty())
+        {
+            plen = InfoProxyCrossRealm.GetGroupMemberCount(0);
+            for (uint i = 0; i < plen; i++)
+            {
+                unsafe
+                {
+                    var crossRealmMember = InfoProxyCrossRealm.GetGroupMember(i, 0);
+                    var classJob = Plugin.DataManager.GetExcelSheet<ClassJob>().GetRow((uint)crossRealmMember->ClassJobId);
+                    newJobs.Add(Util.GetJobFlagsForClassJob(classJob));
+                }
+            }
+        }
+        else if (Plugin.PartyList.Length > 0)
+        {
+            plen = Plugin.PartyList.Length;
+            for (var i = 0; i < plen; i++)
+            {
+                newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.PartyList[i].ClassJob.Value));
+            }
+        }
+        else if (Plugin.PartyList.Length == 0)
+        {
+            newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.ClientState.LocalPlayer.ClassJob.Value));
+        }
+        return newJobs;
     }
 }

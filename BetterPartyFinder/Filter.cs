@@ -12,6 +12,7 @@ namespace BetterPartyFinder;
 public class Filter : IDisposable
 {
     private Plugin Plugin { get; }
+    private List<JobFlags> FilterJobs { get; set; } 
 
     internal Filter(Plugin plugin)
     {
@@ -112,53 +113,28 @@ public class Filter : IDisposable
         }
 
         // if GroupSearchMode, replace filter jobs in var with active party member jobs
-        if (Plugin.Config.GroupSearchMode)
+        if (Plugin.Config.GroupSearchMode && !listing[SearchAreaFlags.AllianceRaid])
         {
-            List<JobFlags> newJobs = new();
-            int plen = new();
-            if (InfoProxyCrossRealm.IsCrossRealmParty())
-            {
-                plen = InfoProxyCrossRealm.GetGroupMemberCount(0);
-                for (uint i = 0; i < plen; i++)
-                {
-                    unsafe
-                    {
-                        var crossRealmMember = InfoProxyCrossRealm.GetGroupMember(i, 0);
-                        //byte memberClassJobId = CrossRealmMember InfoProxyCrossRealm.GetGroupMember(i, 0);
-                        ClassJob classJob = Plugin.DataManager.GetExcelSheet<ClassJob>().GetRow((uint)crossRealmMember->ClassJobId);
-                        newJobs.Add(Util.GetJobFlagsForClassJob(classJob));
-                    }
-                }
-            } else if (Plugin.PartyList.Length > 0)
-            {
-                plen = Plugin.PartyList.Length;
-                for (var i = 0; i < plen; i++)
-                {
-                    newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.PartyList[i].ClassJob.Value));
-                }
-                filter.Jobs = newJobs;
-            } else if (Plugin.PartyList.Length == 0)
-            {
-                newJobs.Add(Util.GetJobFlagsForClassJob(Plugin.ClientState.LocalPlayer.ClassJob.Value));
-            }
-            
-            filter.Jobs = newJobs;
+            FilterJobs = Util.GetCurrentPartyJobs();
         }
 
         // filter based on jobs (slow?)
-        if (filter.Jobs.Count > 0 && !listing[SearchAreaFlags.AllianceRaid])
+        if ((filter.Jobs.Count > 0 || Plugin.Config.GroupSearchMode) && !listing[SearchAreaFlags.AllianceRaid])
         {
             var slots = listing.Slots.ToArray();
             var present = listing.RawJobsPresent.ToArray();
-
+            if (!Plugin.Config.GroupSearchMode)
+            {
+                FilterJobs = filter.Jobs;
+            }
             // create a list of sets containing the slots each job is able to join
-            var jobs = new HashSet<int>[filter.Jobs.Count];
+            var jobs = new HashSet<int>[FilterJobs.Count];
             for (var i = 0; i < jobs.Length; i++)
                 jobs[i] = [];
 
-            for (var idx = 0; idx < filter.Jobs.Count; idx++)
+            for (var idx = 0; idx < FilterJobs.Count; idx++)
             {
-                var wanted = filter.Jobs[idx];
+                var wanted = FilterJobs[idx];
 
                 for (var i = 0; i < listing.SlotsAvailable; i++)
                 {
