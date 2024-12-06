@@ -16,6 +16,8 @@ public class Configuration : IPluginConfiguration
     public bool ShowWhenPfOpen { get; set; }
     public WindowSide WindowSide { get; set; } = WindowSide.Left;
 
+    public bool GroupSearchMode { get; set; } 
+
     internal static Configuration? Load()
     {
         return (Configuration?) Plugin.Interface.GetPluginConfig();

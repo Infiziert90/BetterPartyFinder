@@ -24,6 +24,8 @@ public class Plugin : IDalamudPlugin
     [PluginService] public static IAddonLifecycle AddonLifecycle { get; private set; } = null!;
     [PluginService] public static IPluginLog Log { get; private set; } = null!;
 
+    [PluginService] public static IPartyList PartyList { get; private set; } = null!;
+
     public readonly WindowSystem WindowSystem = new(Name);
     public ConfigWindow ConfigWindow { get; init; }
     public MainWindow MainWindow { get; init; }
