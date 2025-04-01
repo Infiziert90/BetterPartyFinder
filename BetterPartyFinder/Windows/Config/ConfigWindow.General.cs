@@ -18,6 +18,13 @@ public partial class ConfigWindow
             Plugin.Config.Save();
         }
 
+        var groupSearchMode = Plugin.Config.GroupSearchMode;
+        if (ImGui.Checkbox("Group search mode(Ignores preset Jobs, uses active party members ClassJobs or own ClassJob", ref groupSearchMode))
+        {
+            Plugin.Config.GroupSearchMode = groupSearchMode;
+            Plugin.Config.Save();
+        }
+
         var sideOptions = new[]
         {
             "Left",
