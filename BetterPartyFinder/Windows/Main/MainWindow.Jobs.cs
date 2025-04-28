@@ -18,6 +18,13 @@ public partial class MainWindow
             Plugin.Config.Save();
         }
 
+        if (ImGui.Button("Overwrite with current Jobs"))
+        {
+            filter.Jobs = Util.GetCurrentPartyJobs();
+            Plugin.Config.Save();
+        }
+
+
         var toRemove = new HashSet<int>();
         for (var i = 0; i < filter.Jobs.Count; i++)
         {
