@@ -1,7 +1,7 @@
 ﻿using Dalamud.Game.Gui.PartyFinder.Types;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace BetterPartyFinder.Windows.Main;
 

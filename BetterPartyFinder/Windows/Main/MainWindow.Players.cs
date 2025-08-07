@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Dalamud.Interface;
 using Dalamud.Interface.Utility.Raii;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace BetterPartyFinder.Windows.Main;
 

@@ -206,15 +206,13 @@ public class Filter : IDisposable
                     var b = jobs[j];
 
                     // check if the slots either job can join have overlap
-                    var overlap = a.Intersect(b);
-                    if (overlap.Count() != 1)
+                    if (a.Intersect(b).Count() != 1)
                         continue;
 
                     // if there is overlap, check the difference between the sets
                     // if there is no difference, the party can't be joined
                     // note that if the overlap is more than one slot, we don't need to check
-                    var difference = a.Except(b);
-                    if (!difference.Any())
+                    if (!a.Except(b).Any())
                         return false;
                 }
             }

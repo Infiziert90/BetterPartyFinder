@@ -6,7 +6,7 @@ using Dalamud.Interface.Utility;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
+using Dalamud.Bindings.ImGui;
 
 namespace BetterPartyFinder.Windows.Main;
 
@@ -42,7 +42,7 @@ public unsafe partial class MainWindow : Window, IDisposable
         Addon = null;
         var addonPtr = Plugin.GameGui.GetAddonByName("LookingForGroup");
         if (Plugin.Config.ShowWhenPfOpen && addonPtr != nint.Zero)
-            Addon = (AtkUnitBase*) addonPtr;
+            Addon = (AtkUnitBase*) addonPtr.Address;
 
         IsCollapsed = true;
 
