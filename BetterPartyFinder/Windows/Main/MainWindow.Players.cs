@@ -12,7 +12,7 @@ public partial class MainWindow
 
     private void DrawPlayersTab(ConfigurationFilter filter)
     {
-        var player = Plugin.ClientState.LocalPlayer;
+        var player = Plugin.ObjectTable.LocalPlayer;
         if (player == null)
             return;
 
