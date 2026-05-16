@@ -209,10 +209,7 @@ public class Filter : IDisposable
                     if (a.Intersect(b).Count() != 1)
                         continue;
 
-                    // if there is overlap, check the difference between the sets
-                    // if there is no difference, the party can't be joined
-                    // note that if the overlap is more than one slot, we don't need to check
-                    if (!a.Except(b).Any())
+                    if (!a.Except(b).Any() && !b.Except(a).Any())
                         return false;
                 }
             }
